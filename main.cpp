@@ -10,8 +10,6 @@ public:
     int leftBack;
     int rightFront;
     int rightBack;
-
-    
 };
 
 class Powertrain {
@@ -20,6 +18,7 @@ public:
     int topSpeed;
     int averageSpeed;
     int lowestSpeed;
+    int cautionSpeed;
 };
 
 class Car {
@@ -80,6 +79,7 @@ int main() {
         cars[i].engines.averageSpeed = 180;
         cars[i].engines.topSpeed = 205;
         cars[i].engines.lowestSpeed = 170;
+        cars[i].engines.cautionSpeed = 70;
     }
 
     // The rest of your code remains the same, using the cars array instead of car1
@@ -92,8 +92,9 @@ int main() {
     std::cout << "3. Michigan International Speedway" << std::endl;
     std::cout << "4. Phoenix Raceway" << std::endl;
     std::cout << "5. Exit Simulation" << std::endl;
-    int trackChoice = 3;
-    //std::cin >> trackChoice;
+    //int trackChoice = 3;
+    int trackChoice;
+    std::cin >> trackChoice;
 
     switch (trackChoice) {
         case 1:
@@ -122,7 +123,7 @@ int main() {
     bool caution = false;
     double lapTime;
     double totalTime;
-
+    int cautionCount = 0;
     // Set up a random number generator
     std::random_device rdd;
     std::default_random_engine engine(rdd());
@@ -133,6 +134,7 @@ int main() {
     int lowSpeedFlux;
     std::vector<Car> standings;
     std::vector<Car> crashedCars;
+
     // race loop
     for (int lap = 1; lap <= race1.laps; lap++) {
         standings.clear();
@@ -147,12 +149,20 @@ int main() {
             lowSpeedFlux = cars[i].engines.averageSpeed - cars[i].engines.lowestSpeed;
             std::uniform_real_distribution<double> speedFluctuation(-lowSpeedFlux, topSpeedFlux);
             // lap time based on 175 - 185 mph
-            lapTime = track1.distance / (cars[i].engines.averageSpeed + speedFluctuation(engine)) * 3600;
             // if caution - better mpg
-            if (caution == false)
+            if (caution == false){
+                lapTime = track1.distance / (cars[i].engines.averageSpeed + speedFluctuation(engine)) * 3600;
                 cars[i].fuelLevel -= track1.distance / cars[i].mpg;
+            }
             else
+            {
+                lapTime = track1.distance / cars[i].engines.cautionSpeed * 3600;
                 cars[i].fuelLevel -= track1.distance / cars[i].mpgCaution;
+                cautionCount -= 1;
+                if (cautionCount == 1){
+                    caution = false;
+                }
+            }
             // pitstop loop
             if (cars[i].fuelLevel <= 0 || (cars[i].fuelLevel - track1.distance / cars[i].mpg) <= 0) {
                 //std::cout << "pit stop for car " << i+1 << std::endl;
@@ -169,17 +179,26 @@ int main() {
                 cars[i].tires.leftBack = std::max(0, cars[i].tires.leftBack - 1);
                 cars[i].tires.rightFront = std::max(0, cars[i].tires.rightFront - 1);
                 cars[i].tires.rightBack = std::max(0, cars[i].tires.rightBack - 1);
-                // Decrease totalSpeed by 0.1 for every point lost
+                // Decrease totalSpeed by 0.1 for tirewear
                 cars[i].engines.topSpeed -= 0.1;
             }
 
-            if (std::bernoulli_distribution(overallCrashProbability)(engine)) {
-            // Car crashes or spins
-            std::cout << "Car #" << cars[i].number << " (" << cars[i].make << ") crashed or spun during Lap " << lap << "!" << std::endl;
-            hasCrashed[i] = true;
-            //lapTime += 30; // Adjust lap time for the crash
-        }
-
+            if (std::bernoulli_distribution(overallCrashProbability)(engine) && caution == false) {
+                // Car crashes or spins
+                std::cout << "Car #" << cars[i].number << " (" << cars[i].make << ") crashed or spun during Lap " << lap << "!" << std::endl;
+                if (std::bernoulli_distribution(0.5)(engine)) {
+                    // 50% chance the car is completely out of the race
+                    std::cout << "Car #" << cars[i].number << " (" << cars[i].make << ") is out of the race!" << std::endl;
+                    hasCrashed[i] = true;
+                    cautionCount = 10;
+                } else {
+                    // 50% chance the car continues in the race
+                    std::cout << "Car #" << cars[i].number << " (" << cars[i].make << ") continues in the race." << std::endl;
+                    lapTime += 30;
+                    cautionCount = 5;
+                } 
+                caution = true;
+            }
             
             //std::cout << "Car " << i+1 << ": " << lapTime << " second lap time" << std::endl;
             totalTime += lapTime / 3600;
@@ -187,11 +206,9 @@ int main() {
             cars[i].totalLapTime += lapTime;
             standings.push_back(cars[i]);
         }
-
         // Sort the standings based on total lap time
-        std::sort(standings.begin(), standings.end(), compareCars);
-
-        /* Print standings after each lap
+        //std::sort(standings.begin(), standings.end(), compareCars);
+        /*Print standings after each lap
         std::cout << "Standings after Lap " << lap << ":" << std::endl;
         for (int i = 0; i < numCars; ++i) {
             std::cout << "Car " << i+1 << ": Total Lap Time - " << standings[i].totalLapTime << " hours" << std::endl;
@@ -202,12 +219,12 @@ int main() {
 
     // Print finished cars
     std::sort(standings.begin(), standings.end(), compareCars);
-    for (int i = 0; i < standings.size(); ++i) {
+    for (std::vector<Car>::size_type i = 0; i < standings.size(); ++i) {
         std::cout << i + 1 << ": Car #" << standings[i].number << " " << standings[i].make << " Total Lap Time - " << standings[i].totalLapTime / 3600 << " hours" << std::endl;
     }
 
     // Print crashed cars as Did Not Finish
-    for (int i = 0; i < crashedCars.size(); ++i) {
+    for (std::vector<Car>::size_type i = 0; i < crashedCars.size(); ++i) {
         std::cout << "DNF: Car #" << crashedCars[i].number << " " << crashedCars[i].make << std::endl;
     }
 
