@@ -4,6 +4,13 @@
 #include <random>
 #include <algorithm>
 
+class Driver {
+public:
+    std::string name;
+    int carNumber;
+    std::string make;
+    std::string team;
+};
 class Tire {
 public: 
     int leftFront;
@@ -24,6 +31,7 @@ public:
 class Car {
 public:
     std::string make;
+    std::string name;
     int number;
     double mpg;
     double mpgCaution;
@@ -51,7 +59,40 @@ bool compareCars(const Car& car1, const Car& car2) {
 
 int main() {
     const int numCars = 20;
-
+    std::vector<Driver> allDrivers = {
+        {"Ross Chastain", 1, "Chevy", "TRACKHOUSE RACING TEAM"},
+        {"Kyle Larson", 5, "Chevy", "Hendrick Motorsports"},
+        {"Kyle Busch", 8, "Chevy", "Richard Childress Racing"},
+        {"Chase Elliott", 9, "Chevy", "Hendrick Motorsports"},
+        {"Aric Almirola", 10, "Ford", "Stewart-Haas Racing"},
+        {"Denny Hamlin", 11, "Toyota", "Joe Gibbs Racing"},
+        {"Ryan Blaney", 12, "Ford", "Team Penske"},
+        {"Chase Brisco", 14, "Ford", "Steward-Haas Racing"},
+        {"Ryan Newman", 51, "Ford", "RICK WARE RACING"},
+        {"AJ Allmendinger", 16, "Chevy", "Kaulig Racing"},
+        {"Chris Buescher", 17, "Chevy", "RFK Racing"},
+        {"Martin Truex Jr.", 19, "Toyota", "Joe Gibbs Racing"},
+        {"Austin Cindric", 2, "Ford", "Team Penske"},
+        {"Christopher Bell", 20, "Toyota", "Joe Gibbs Racing"},
+        {"Joey Logano", 22, "Ford", "Team Penske"},
+        {"Bubba Wallace", 23, "Toyota", "23XI Racing"},
+        {"William Byron", 24, "Chevy", "Hendrick Motorsports"},
+        {"Kevin Harvick", 4, "Ford", "Steward-Haas Racing"},
+        {"Austin Dillon", 3, "Chevy", "Richard Childress Racing"},
+        {"Michael McDowell", 34, "Ford", "Front Row Motorsports"},
+        {"Ryan Preece", 41, "Ford", "Steward-Haas Racing"},
+        {"Noah Gragson", 42, "Chevy", "Legacy Motor Club"},
+        {"Erik Jones", 43, "Chevy", "Legacy Motor Club"},
+        {"Tyler Reddick", 45, "Toyota", "23XI Racing"},
+        {"Ricky Stenhouse Jr.", 47, "Chevy", "JTG Daugherty Racing"},
+        {"Alex Bowman", 48, "Chevy", "Hendrick Motorsports"},
+        {"Cole Custer", 51, "Ford", "RICK WARE RACING"},
+        {"Ty Gibbs", 54, "Toyota", "Joe Gibbs Racing"},
+        {"Brad Keselowski", 6, "Ford", "RFK Racing"},
+        {"Ty Dillon", 77, "Chevy", "Spire Motorsports"},
+        {"Anthony Alfredo", 78, "Ford", "Live Fast Motorsports"},
+        {"Daniel Suarez", 99, "Chevy", "TRACKHOUSE RACING TEAM"}
+    };
     // Create an array of cars
     Car cars[numCars];
 
@@ -64,8 +105,9 @@ int main() {
 
     // Initialize each car with the same values
     for (int i = 0; i < numCars; ++i) {
-        cars[i].make = makes[makeDist(gen)];
-        cars[i].number = i;
+        cars[i].make = allDrivers[i].make;
+        cars[i].number = allDrivers[i].carNumber;
+        cars[i].name = allDrivers[i].name;
         cars[i].fuelLevel = 22;
         cars[i].mpg = 4;
         cars[i].mpgCaution = 16;
@@ -74,7 +116,7 @@ int main() {
         cars[i].tires.leftBack = 40;
         cars[i].tires.rightFront = 40;
         cars[i].tires.rightBack = 40;
-        cars[i].totalLapTime = 0; // Initialize total lap time to 0
+        cars[i].totalLapTime = 0;
         cars[i].engines.horsepower = 550;
         cars[i].engines.averageSpeed = 180;
         cars[i].engines.topSpeed = 205;
@@ -220,12 +262,12 @@ int main() {
     // Print finished cars
     std::sort(standings.begin(), standings.end(), compareCars);
     for (std::vector<Car>::size_type i = 0; i < standings.size(); ++i) {
-        std::cout << i + 1 << ": Car #" << standings[i].number << " " << standings[i].make << " Total Lap Time - " << standings[i].totalLapTime / 3600 << " hours" << std::endl;
+        std::cout << i + 1 << ": #" << standings[i].number << " " << standings[i].name << " " << standings[i].make << " Total Time - " << standings[i].totalLapTime / 3600 << " hr" << std::endl;
     }
 
     // Print crashed cars as Did Not Finish
     for (std::vector<Car>::size_type i = 0; i < crashedCars.size(); ++i) {
-        std::cout << "DNF: Car #" << crashedCars[i].number << " " << crashedCars[i].make << std::endl;
+        std::cout << "DNF: #" << crashedCars[i].number << " " << crashedCars[i].name << " " << crashedCars[i].make << std::endl;
     }
 
     return 0;
