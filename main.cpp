@@ -4,6 +4,22 @@
 #include <random>
 #include <algorithm>
 
+/*
+class Teams {
+public:
+    std::string teamName;
+    
+    Teams(const std::string& name) : teamName(name) {}
+
+    // Function to update the car's speed based on the team
+    void updateCarSpeed(Powertrain& engines) {
+        if (teamName == "Team Penske" || teamName == "Hendrick Motorsports" || teamName == "Joe Gibbs Racing") {
+            engines.topSpeed += 1;
+        }
+    }
+
+}; */
+
 class Driver {
 public:
     std::string name;
@@ -11,6 +27,7 @@ public:
     std::string make;
     std::string team;
 };
+
 class Tire {
 public: 
     int leftFront;
@@ -58,7 +75,7 @@ bool compareCars(const Car& car1, const Car& car2) {
 }
 
 int main() {
-    const int numCars = 20;
+    const int numCars = 30;
     std::vector<Driver> allDrivers = {
         {"Ross Chastain", 1, "Chevy", "TRACKHOUSE RACING TEAM"},
         {"Kyle Larson", 5, "Chevy", "Hendrick Motorsports"},
@@ -175,22 +192,28 @@ int main() {
     int topSpeedFlux;
     int lowSpeedFlux;
     std::vector<Car> standings;
+    std::vector<Car>realTime;
     std::vector<Car> crashedCars;
 
     // race loop
     for (int lap = 1; lap <= race1.laps; lap++) {
+        realTime = standings;
         standings.clear();
         crashedCars.clear();
+        std::sort(realTime.begin(), realTime.end(), compareCars);
         // for every car in race
         for (int i = 0; i < numCars; ++i) {
+
             if (hasCrashed[i]) {
                 crashedCars.push_back(cars[i]);
                 continue;
             }
+
             topSpeedFlux = cars[i].engines.topSpeed - cars[i].engines.averageSpeed;
             lowSpeedFlux = cars[i].engines.averageSpeed - cars[i].engines.lowestSpeed;
-            std::uniform_real_distribution<double> speedFluctuation(-lowSpeedFlux, topSpeedFlux);
             // lap time based on 175 - 185 mph
+            std::uniform_real_distribution<double> speedFluctuation(-lowSpeedFlux, topSpeedFlux);
+            
             // if caution - better mpg
             if (caution == false){
                 lapTime = track1.distance / (cars[i].engines.averageSpeed + speedFluctuation(engine)) * 3600;
@@ -224,7 +247,7 @@ int main() {
                 // Decrease totalSpeed by 0.1 for tirewear
                 cars[i].engines.topSpeed -= 0.1;
             }
-
+            
             if (std::bernoulli_distribution(overallCrashProbability)(engine) && caution == false) {
                 // Car crashes or spins
                 std::cout << "Car #" << cars[i].number << " (" << cars[i].make << ") crashed or spun during Lap " << lap << "!" << std::endl;
@@ -233,12 +256,13 @@ int main() {
                     std::cout << "Car #" << cars[i].number << " (" << cars[i].make << ") is out of the race!" << std::endl;
                     hasCrashed[i] = true;
                     cautionCount = 10;
+
                 } else {
                     // 50% chance the car continues in the race
                     std::cout << "Car #" << cars[i].number << " (" << cars[i].make << ") continues in the race." << std::endl;
                     lapTime += 30;
                     cautionCount = 5;
-                } 
+                }
                 caution = true;
             }
             
@@ -248,6 +272,7 @@ int main() {
             cars[i].totalLapTime += lapTime;
             standings.push_back(cars[i]);
         }
+        realTime.clear();
         // Sort the standings based on total lap time
         //std::sort(standings.begin(), standings.end(), compareCars);
         /*Print standings after each lap
@@ -262,12 +287,12 @@ int main() {
     // Print finished cars
     std::sort(standings.begin(), standings.end(), compareCars);
     for (std::vector<Car>::size_type i = 0; i < standings.size(); ++i) {
-        std::cout << i + 1 << ": #" << standings[i].number << " " << standings[i].name << " " << standings[i].make << " Total Time - " << standings[i].totalLapTime / 3600 << " hr" << std::endl;
+        std::cout << i + 1 << ": #" << standings[i].number << " " << standings[i].name << " - " << standings[i].make << " Total Time - " << standings[i].totalLapTime / 3600 << " hr" << std::endl;
     }
 
     // Print crashed cars as Did Not Finish
     for (std::vector<Car>::size_type i = 0; i < crashedCars.size(); ++i) {
-        std::cout << "DNF: #" << crashedCars[i].number << " " << crashedCars[i].name << " " << crashedCars[i].make << std::endl;
+        std::cout << "DNF: #" << crashedCars[i].number << " " << crashedCars[i].name << " - " << crashedCars[i].make << std::endl;
     }
 
     return 0;
