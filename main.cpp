@@ -3,7 +3,8 @@
 #include <vector>
 #include <random>
 #include <algorithm>
-
+#include "car.h"
+#include "team.h"
 /*
 class Teams {
 public:
@@ -28,38 +29,6 @@ public:
     std::string team;
 };
 
-class Tire {
-public: 
-    int leftFront;
-    int leftBack;
-    int rightFront;
-    int rightBack;
-};
-
-class Powertrain {
-public:
-    int horsepower;
-    int topSpeed;
-    int averageSpeed;
-    int lowestSpeed;
-    int cautionSpeed;
-};
-
-class Car {
-public:
-    std::string make;
-    std::string name;
-    int number;
-    double mpg;
-    double mpgCaution;
-    double fuelLevel;
-    int horsepower;
-    double speed;
-    Powertrain engines;
-    Tire tires;
-    double totalLapTime; // Added to store total lap time for each car
-};
-
 class Track {
 public:
     double distance;
@@ -75,7 +44,8 @@ bool compareCars(const Car& car1, const Car& car2) {
 }
 
 int main() {
-    const int numCars = 30;
+    // 30
+    const int numCars = 1;
     std::vector<Driver> allDrivers = {
         {"Ross Chastain", 1, "Chevy", "TRACKHOUSE RACING TEAM"},
         {"Kyle Larson", 5, "Chevy", "Hendrick Motorsports"},
@@ -240,7 +210,11 @@ int main() {
                 cars[i].engines.topSpeed = 205;
             }
             else {
-                cars[i].tires.leftFront = std::max(0, cars[i].tires.leftFront - 1);
+                std::cout << "tire before: " << cars[i].tires.leftFront << std::endl;
+                //cars[i].tires.tireWear(cars[i].tires.leftFront)
+                cars[i].tires.leftFront = cars[i].tires.tireWear(cars[i].tires.leftFront);
+                std::cout << "tire after: " << cars[i].tires.leftFront << std::endl;
+                //cars[i].tires.leftFront = std::max(0, cars[i].tires.leftFront - 1);
                 cars[i].tires.leftBack = std::max(0, cars[i].tires.leftBack - 1);
                 cars[i].tires.rightFront = std::max(0, cars[i].tires.rightFront - 1);
                 cars[i].tires.rightBack = std::max(0, cars[i].tires.rightBack - 1);
