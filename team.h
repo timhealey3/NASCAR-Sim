@@ -118,6 +118,7 @@ class Hendrick : public Team {
 public:
     Hendrick() : Team("Hendrick Motorsport", MAKE::CHEVY, BUDGET::HIGH,
                     {
+                        {"Kyle Larson", 5, Car()},
                         {"Chase Elliott", 9, Car()},
                         {"Alex Bowman", 48, Car()},
                         {"William Byron", 24, Car()}
@@ -129,8 +130,20 @@ public:
     JoeGibbs() : Team("Joe Gibbs Racing", MAKE::TOYOTA, BUDGET::HIGH,
                     {
                         {"Denny Hamlin", 11, Car()},
-                        {"Martin Truex Jr", 19, Car()}
-                    }, 2) {}
+                        {"Martin Truex Jr", 19, Car()},
+                        {"Ty Gibbs", 54, Car()},
+                        {"Christopher Bell", 20, Car()}
+                    }, 3) {}
+};
+
+class Penske : public Team {
+public:
+    Penske() : Team("Penske", MAKE::FORD, BUDGET::HIGH,
+                    {
+                        {"Joey Logano", 22, Car()},
+                        {"Ryan Blaney", 12, Car()},
+                        {"Austin Cindric", 2, Car()}
+                    }, 3) {}
 };
 
 class TwentyThree : public Team {
@@ -151,39 +164,36 @@ public:
                     }, 2) {}
 };
 
-/*
-std::vector<Driver> allDrivers = {
-        {"Ross Chastain", 1, "Chevy", "TRACKHOUSE RACING TEAM"},
-        {"Kyle Larson", 5, "Chevy", "Hendrick Motorsports"},
-        {"Kyle Busch", 8, "Chevy", "Richard Childress Racing"},
-        {"Chase Elliott", 9, "Chevy", "Hendrick Motorsports"},
-        {"Aric Almirola", 10, "Ford", "Stewart-Haas Racing"},
-        {"Denny Hamlin", 11, "Toyota", "Joe Gibbs Racing"},
-        {"Ryan Blaney", 12, "Ford", "Team Penske"},
-        {"Chase Brisco", 14, "Ford", "Steward-Haas Racing"},
-        {"Ryan Newman", 51, "Ford", "RICK WARE RACING"},
-        {"AJ Allmendinger", 16, "Chevy", "Kaulig Racing"},
-        {"Chris Buescher", 17, "Chevy", "RFK Racing"},
-        {"Martin Truex Jr.", 19, "Toyota", "Joe Gibbs Racing"},
-        {"Austin Cindric", 2, "Ford", "Team Penske"},
-        {"Christopher Bell", 20, "Toyota", "Joe Gibbs Racing"},
-        {"Joey Logano", 22, "Ford", "Team Penske"},
-        {"Bubba Wallace", 23, "Toyota", "23XI Racing"},
-        {"William Byron", 24, "Chevy", "Hendrick Motorsports"},
-        {"Kevin Harvick", 4, "Ford", "Steward-Haas Racing"},
-        {"Austin Dillon", 3, "Chevy", "Richard Childress Racing"},
-        {"Michael McDowell", 34, "Ford", "Front Row Motorsports"},
-        {"Ryan Preece", 41, "Ford", "Steward-Haas Racing"},
-        {"Noah Gragson", 42, "Chevy", "Legacy Motor Club"},
-        {"Erik Jones", 43, "Chevy", "Legacy Motor Club"},
-        {"Tyler Reddick", 45, "Toyota", "23XI Racing"},
-        {"Ricky Stenhouse Jr.", 47, "Chevy", "JTG Daugherty Racing"},
-        {"Alex Bowman", 48, "Chevy", "Hendrick Motorsports"},
-        {"Cole Custer", 51, "Ford", "RICK WARE RACING"},
-        {"Ty Gibbs", 54, "Toyota", "Joe Gibbs Racing"},
-        {"Brad Keselowski", 6, "Ford", "RFK Racing"},
-        {"Ty Dillon", 77, "Chevy", "Spire Motorsports"},
-        {"Anthony Alfredo", 78, "Ford", "Live Fast Motorsports"},
-        {"Daniel Suarez", 99, "Chevy", "TRACKHOUSE RACING TEAM"}
-    }; 
-*/
+class RickWare : public Team {
+public:
+    RickWare() : Team("Rick Ware Racing", MAKE::FORD, BUDGET::LOW,
+                    {
+                        {"Todd Gilliland", 38, Car()},
+                        {"Cody Ware", 51, Car()}
+                    }, 2) {}
+};
+
+class RichardChildress : public Team {
+public:
+    RichardChildress() : Team("Richard Childress Racing", MAKE::CHEVY, BUDGET::MID,
+                    {
+                        {"Kyle Busch", 8, Car()},
+                        {"Austin Dillon", 3, Car()}
+                    }, 2) {}
+};
+
+class JTG : public Team {
+public:
+    JTG() : Team("JTG Racing", MAKE::CHEVY, BUDGET::MID,
+                    {
+                        {"Ricky Stenhouse Jr.", 47, Car()},
+                    }, 1) {}
+};
+
+class LiveFast : public Team{
+public:
+    LiveFast() : Team("Live Fast Motorsports", MAKE::CHEVY, BUDGET::LOW,
+    {
+        {"BJ Mcleod", 78, Car()},
+    }, 1) {}
+};
