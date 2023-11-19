@@ -26,16 +26,22 @@ int main() {
     JoeGibbs gibbs;
     Trackhouse thouse;
     TwentyThree twothree;
+    RichardChildress rich;
+    Penske penske;
+    RickWare rickw;
+    JTG jtg;
+    LiveFast lf;
     // add all team.Drivers to vector
-    
-    //int numDrivers = DriverInfo::getTotalDrivers();
-    //Car cars[numDrivers];
-
     std::vector<DriverInfo> allDrivers;
     allDrivers.insert(allDrivers.end(), hend.Drivers.begin(), hend.Drivers.end());
     allDrivers.insert(allDrivers.end(), gibbs.Drivers.begin(), gibbs.Drivers.end());
     allDrivers.insert(allDrivers.end(), thouse.Drivers.begin(), thouse.Drivers.end());
     allDrivers.insert(allDrivers.end(), twothree.Drivers.begin(), twothree.Drivers.end());
+    allDrivers.insert(allDrivers.end(), rich.Drivers.begin(), rich.Drivers.end());
+    allDrivers.insert(allDrivers.end(), penske.Drivers.begin(), penske.Drivers.end());
+    allDrivers.insert(allDrivers.end(), rickw.Drivers.begin(), rickw.Drivers.end());
+    allDrivers.insert(allDrivers.end(), jtg.Drivers.begin(), jtg.Drivers.end());
+    allDrivers.insert(allDrivers.end(), lf.Drivers.begin(), lf.Drivers.end());
     size_t driverLength = allDrivers.size();
 
     for (int i = 0; i < driverLength; ++i) {
@@ -51,9 +57,9 @@ int main() {
     std::cout << "3. Michigan International Speedway" << std::endl;
     std::cout << "4. Phoenix Raceway" << std::endl;
     std::cout << "5. Exit Simulation" << std::endl;
-    int trackChoice = 3;
-    //int trackChoice;
-    //std::cin >> trackChoice;
+    //int trackChoice = 3;
+    int trackChoice;
+    std::cin >> trackChoice;
 
     switch (trackChoice) {
         case 1:
@@ -86,23 +92,22 @@ int main() {
     // Set up a random number generator
     std::random_device rdd;
     std::default_random_engine engine(rdd());
-    //double targetCrashesPerRace = 5.0;
-    //double overallCrashProbability = targetCrashesPerRace / race1.laps / driverLength;
-    //std::vector<bool> hasCrashed(driverLength, false);
+    double targetCrashesPerRace = 5.0;
+    double overallCrashProbability = targetCrashesPerRace / race1.laps / driverLength;
+    std::vector<bool> hasCrashed(driverLength, false);
     std::vector<DriverInfo> standings;
-    //std::vector<Car> crashedCars;
+    std::vector<DriverInfo> crashedCars;
 
     // race loop
     for (int lap = 1; lap <= race1.laps; lap++) {
         standings.clear();
-        //crashedCars.clear();
+        crashedCars.clear();
         // for every car in race
         for (int i = 0; i < driverLength; ++i) {
-            /*
             if (hasCrashed[i]) {
-                crashedCars.push_back(allDrivers[i].car);
+                crashedCars.push_back(allDrivers[i]);
                 continue;
-            } */
+            } 
             // lap time based on 170 <- 190 -> 205 mph
             std::uniform_real_distribution<double> speedFluctuation(allDrivers[i].car.engines.lowestSpeed, allDrivers[i].car.engines.topSpeed);
             
@@ -143,7 +148,7 @@ int main() {
                 // Decrease totalSpeed by 0.1 for tirewear
                 allDrivers[i].car.engines.topSpeed -= 0.1;
             }
-            /*
+
             if (std::bernoulli_distribution(overallCrashProbability)(engine) && caution == false) {
                 // Car crashes or spins
                 std::cout << "Car #" << allDrivers[i].number << " (" << allDrivers[i].name << ") crashed or spun during Lap " << lap << "!" << std::endl;
@@ -161,7 +166,7 @@ int main() {
                 }
                 caution = true;
             }
-            */
+
             //std::cout << "Car " << i+1 << ": " << lapTime << " second lap time" << std::endl;
             totalTime += lapTime / 3600;
 
@@ -171,22 +176,24 @@ int main() {
         // Sort the standings based on total lap time
         std::sort(standings.begin(), standings.end(), compareDrivers);
         //Print standings after each lap
+        /*
         std::cout << "Standings after Lap " << lap << ":" << std::endl;
         for (int i = 0; i < driverLength; ++i) {
-            std::cout << i+1 << ". #" << standings[i].number << " " << standings[i].name << " : Total Lap Time - " << standings[i].car.totalLapTime << " hours" << std::endl;
-        }
+            std::cout << i+1 << ". #" << standings[i].number << " " << standings[i].name << " : Total Lap Time - " << standings[i].car.totalLapTime << " hours" << " speed: " << std::endl;
+        } */
     }
     //print total standings
     std::cout << "Final Standings:" << std::endl;
 
     // Print finished cars
-    //std::sort(standings.begin(), standings.end(), compareCars);
-    //for (std::vector<Car>::size_type i = 0; i < standings.size(); ++i) {
-    //    std::cout << i + 1 << ": #" << standings[i].name << " " << standings[i].name << " - " << standings[i].make << " Total Time - " << standings[i].totalLapTime / 3600 << " hr" << std::endl;
-    //}
+    std::sort(standings.begin(), standings.end(), compareDrivers);
+    for (std::vector<Car>::size_type i = 0; i < standings.size(); ++i) {
+        std::cout << i + 1 << ": #" << standings[i].number << " " << standings[i].name << " - " << " Total Time - " << standings[i].car.totalLapTime / 3600 << " hr" << std::endl;
+    }
 
     // Print crashed cars as Did Not Finish
-    //for (std::vector<Car>::size_type i = 0; i < crashedCars.size(); ++i) {
-    //    std::cout << "DNF: #" << crashedallDrivers[i].car.number << " " << crashedallDrivers[i].car.name << " - " << crashedallDrivers[i].car.make << std::endl;
+    for (std::vector<Car>::size_type i = 0; i < crashedCars.size(); ++i) {
+        std::cout << "DNF: #" << crashedCars[i].number << " " << crashedCars[i].name << " - " << crashedCars[i].car.totalLapTime / 3600 << " hr" << std::endl;
+    }
     return 0;
 }
